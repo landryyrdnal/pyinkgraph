@@ -156,6 +156,8 @@ def trouver_choix(code_ink):
 
                     if re.search("->", ligne):
                         derive = True
+                        cible = trouver_derivation(ligne)
+
 
             if derive:
                 genre_choix = "choix dérivé"
@@ -163,13 +165,16 @@ def trouver_choix(code_ink):
             else:
                 genre_choix = "choix simple"
 
+            dict_choix = {"genre": genre_choix, "debut": debut_choix, "fin": fin_choix, "niveau": niveau_choix}
+
+            if derive:
+                dict_choix["cible"] = cible
+
             if etiquette:
-                histoire_ink.append(
-                    {"genre": genre_choix, "nom": etiquette_choix, "debut": debut_choix, "fin": fin_choix,
-                     "niveau": niveau_choix})
-            else:
-                histoire_ink.append(
-                    {"genre": genre_choix, "debut": debut_choix, "fin": fin_choix, "niveau": niveau_choix})
+                dict_choix["nom"] = etiquette_choix
+
+
+            histoire_ink.append(dict_choix)
 
 
 def trouver_collecteur(code_ink):
@@ -215,6 +220,9 @@ def trouver_collecteur(code_ink):
 
                     if re.search("->", ligne):
                         derive = True
+                        cible = trouver_derivation(ligne)
+
+
 
             if derive:
                 genre_collecteur = "collecteur dérivé"
@@ -222,13 +230,16 @@ def trouver_collecteur(code_ink):
             else:
                 genre_collecteur = "collecteur simple"
 
-            if etiquette:
-                histoire_ink.append({"genre": genre_collecteur, "nom": etiquette_collecteur, "debut": debut_collecteur,
-                                     "fin": fin_collecteur, "niveau": niveau_collecteur})
-            else:
-                histoire_ink.append({"genre": genre_collecteur, "debut": debut_collecteur, "fin": fin_collecteur,
-                                     "niveau": niveau_collecteur})
+            dict_collecteur = {"genre": genre_collecteur, "debut": debut_collecteur, "fin": fin_collecteur,
+                           "niveau": niveau_collecteur}
 
+            if derive:
+                dict_collecteur["cible"] = cible
+
+            if etiquette:
+                dict_collecteur["nom"] = etiquette_choix
+
+            histoire_ink.append(dict_collecteur)
 
 
 
