@@ -16,6 +16,18 @@ code_ink = code_ink.split("\n")
 
 histoire_ink = []
 
+def est_dans(element, dans_element):
+    position = element.get("debut")
+    if debut > dans_element.get("debut") and debut < dans_element.get("fin"):
+        return True
+    else:
+        return False
+
+def genre_est(genre, element):
+    if element.get("genre") == genre:
+        return True
+    else:
+        return False
 
 def nettoyer_code(code_ink):
     nouveau_code = []
@@ -49,6 +61,7 @@ def trouver_noeuds(code_ink):
             # détermination du titre du noeud
             titre_noeud = re.sub("=", "", ligne)
             titre_noeud = re.sub("_", " ", titre_noeud)
+            titre_noeud = titre_noeud.lstrip()
 
             # recherche du prochain noeud pour déterminer la portée du précédent
             index = code_ink.index(ligne) + 1
@@ -242,123 +255,23 @@ def trouver_collecteur(code_ink):
             histoire_ink.append(dict_collecteur)
 
 
+def imprimer_liens_explicites(histoire_ink):
+    for element in histoire_ink:
+        if element.get("cible"):
+            cible = element.get("cible")
+            if element.get("nom"):
+                nom = element.get("nom")
+                graph.edge(cible, nom)
+            else:
+                nom = str(element.get("debut"))
+                graph.edge(cible, nom)
+
+def imprimer_liens_implicites(histoire_ink):
+    for element in histoire_ink:
+        if genre_est("noeud", element):
+            for i in histoire_ink:
 
 
-
-
-
-
-# def tri_par_critere(critere, interval, histoire_ink):
-#     if type(critere) == str:
-#         critere = list(critere)
-#     resultat = []
-#     for ligne in histoire_ink:
-#         if ligne.get("genre") in critere \
-#                 and histoire_ink.index(ligne) >= interval.get("debut") + 1 \
-#                 and histoire_ink.index(igne) <= interval.get("fin"):
-#             resultat.append(ligne)
-#     return resultat
-#
-#
-# def imprimer(histoire_ink):
-#     # impression des noeuds et des points en subgraph respectifs
-#
-#     for noeud in histoire_ink:
-#
-#         # recherche chaque nœud
-#         if noeud.get("genre") == "noeud":
-#
-#             # recherche tous les points dans chaque nœud
-#             liste_points_dans_noeud = tri_par_critere("point", noeud, histoire_ink)
-#
-#                 for point in liste_points_dans_noeud:
-#
-#                     # recherche tous les choix & collecteurs dans chaque point
-#                     liste_choix_collecteurs_dans_point = tri_par_critere(["choix simple",
-#                                                                           "choix dérivé",
-#                                                                           "collecteur simple",
-#                                                                           "collecteur dérivé"], point, histoire_ink)
-#
-#
-#
-#                 # recherche tous les choix & collecteurs dans le noeud qui n’appartiennent pas à un point du noeud
-#
-#             # déterminer la portée du noeud avant le premier point
-#             if len(liste_points_dans_noeud) >= 1:
-#                 # tri la liste des points dans le noeud par ordre d’apparition
-#                 liste_points_dans_noeud = sorted(liste_points_dans_noeud, key=lambda k: k['debut'])
-#                 limite = liste_points_dans_noeud[0].get("debut") - 1
-#
-#                 liste_choix_collecteurs_dans_noeud = []
-#                 for choix_collecteur in histoire_ink:
-#                     liste_points_collecteurs_a_chercher = ["choix simple",
-#                                                            "choix dérivé",
-#                                                            "collecteur simple",
-#                                                            "collecteur dérivé"]
-#
-#                     if choix_collecteur.get("genre") in liste_points_collecteurs_a_chercher and \
-#                             choix_collecteur.get("debut") in range(noeud.get("debut"), limite):
-#                         liste_choix_collecteurs_dans_noeud.append(choix_collecteur)
-#                         print(range(noeud.get("debut"), limite))
-#
-#                 # IMPRESSION DES NOMS DES NŒUDS, POINTS, CHOIX & COLLECTEURS
-#
-#                 # impression points en subgraph
-#                 with graph.subgraph(name=str("cluster_" + str(noeud.get("nom")))) as sub:
-#                     # ajout du nœud au graph
-#                     sub.node(noeud.get("nom"), shape="box")
-#                     # style de la boîte du noeud
-#                     sub.attr(style="filled", color="lightgrey")
-#
-#                     # ajout des points du nœud au subgraph
-#                     for point in liste_points_dans_noeud:
-#                         sub.node(point.get("nom"))
-#
-#                     # ajout des choix & collecteurs du nœud au subgraph
-#                     for choix_collecteur in liste_choix_collecteurs_dans_noeud:
-#                         sub.node(str(choix_collecteur.get("nom", choix_collecteur.get("debut"))), shape="plaintext",
-#                                  color="blue")
-#
-#                     if len(liste_choix_collecteurs_dans_point) >= 1:
-#
-#                         # impression points & choix_collecteurs en subsubgraph
-#                         with sub.subgraph(name=str("cluster_" + str(point.get("nom")))) as subsub:
-#
-#                             # style de la boîte du point
-#                             subsub.attr(color="white")
-#
-#                             # ajout des choix_collecteurs du point au subsubgraph
-#                             for choix_collecteur in liste_choix_collecteurs_dans_point:
-#                                 subsub.node(str(choix_collecteur.get("nom", choix_collecteur.get("debut"))),
-#                                             shape="plaintext")
-#                             subsub.node(str(point.get("nom")))
-#
-#     # IMPRESSION DES CHOIX SIMPLES
-#
-#     # relie tous les choix simple au collecteur du même niveau le plus proche
-#     for choix_simple in histoire_ink:
-#
-#         # filtre les choix simples
-#         if choix_simple.get("genre") == "choix simple":
-#             # recherche du collecteur le plus proche
-#             collecteur = ["collecteur simple", "collecteur dérivé"]
-#             index = histoire_ink.index(choix_simple) + 1
-#             while True:
-#                 # si la ligne est un collecteur
-#                 if index >= len(histoire_ink) - 1:
-#                     break
-#
-#
-#                 elif histoire_ink[index].get("genre") in collecteur:
-#                     # si le niveau du choix est égale ou inférieur à celui du collecteur
-#                     if choix_simple.get("niveau") <= histoire_ink[index].get("niveau"):
-#                         graph.edge(str(choix_simple.get("nom", choix_simple.get("debut"))),
-#                                    str(histoire_ink[index].get("nom", histoire_ink[index].get("debut"))))
-#
-#                     break
-#
-#                 else:
-#                     index += 1
 
 
 code_ink = nettoyer_code(code_ink)
@@ -368,11 +281,14 @@ trouver_points(code_ink)
 trouver_collecteur(code_ink)
 
 histoire_ink = trier_histoire(histoire_ink)
-
+imprimer_liens_explicites(histoire_ink)
+imprimer_liens_implicites(histoire_ink)
 
 for i in histoire_ink:
     print(i)
 
 
 # affichage du graph
-#graph.render(view=True)
+graph.render(view=True)
+
+#
