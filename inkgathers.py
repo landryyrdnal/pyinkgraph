@@ -18,7 +18,7 @@ histoire_ink = []
 
 def est_dans(element, dans_element):
     position = element.get("debut")
-    if debut > dans_element.get("debut") and debut < dans_element.get("fin"):
+    if position > dans_element.get("debut") and position < dans_element.get("fin"):
         return True
     else:
         return False
@@ -266,10 +266,23 @@ def imprimer_liens_explicites(histoire_ink):
                 nom = str(element.get("debut"))
                 graph.edge(cible, nom)
 
-def imprimer_liens_implicites(histoire_ink):
+
+def definir_contenu_element(histoire_ink):
     for element in histoire_ink:
-        if genre_est("noeud", element):
-            for i in histoire_ink:
+        contenu = []
+
+        for individu in histoire_ink:
+            if est_dans(individu, element):
+                if individu.get("nom"):
+                    nom = individu.get("nom")
+                else:
+                    nom = individu.get("debut")
+                contenu.append(nom)
+
+        if len(contenu) > 0:
+            element["contenu"] = contenu
+
+
 
 
 
@@ -282,7 +295,7 @@ trouver_collecteur(code_ink)
 
 histoire_ink = trier_histoire(histoire_ink)
 imprimer_liens_explicites(histoire_ink)
-imprimer_liens_implicites(histoire_ink)
+definir_contenu_element(histoire_ink)
 
 for i in histoire_ink:
     print(i)
