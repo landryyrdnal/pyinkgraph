@@ -25,7 +25,7 @@
         * [élastique & cahoutchouteuse]
         plutôt élastique. -> debouchage("un balon crevé")
 
-    e
+    eeee
     = debouchage(le bouchon)
     
     * [Vous tournez le crochet]
