@@ -1,15 +1,18 @@
 import re
+
+
+
 from graphviz import Digraph
-import toml
+
 
 # initialisation du graph
-graph = Digraph(format="pdf")
+graph = Digraph(format="pdf"  )
 
 # ouverture du fichier
 print("Quel est le nom du fichier que vous voulez ouvrir ?")
 # nom_fichier = input("> ")
 nom_fichier = "egouts"
-nom_fichier = "test"
+nom_fichier = "test1"
 # ouverture du code source ink
 code_ink = open(nom_fichier + ".ink", "r", encoding="utf8").read()
 code_ink = code_ink.split("\n")
@@ -370,10 +373,6 @@ def imprimer_liens_implicites(histoire_ink):
                     index -= 1
                 else:
                     index -= 1
-
-
-
-
 
 #graph.edge("test","test1", style = "dotted")
 
