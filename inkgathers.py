@@ -1,12 +1,9 @@
 import re
 
-
-
 from graphviz import Digraph
 
-
 # initialisation du graph
-graph = Digraph(format="pdf"  )
+graph = Digraph(format="pdf")
 
 # ouverture du fichier
 print("Quel est le nom du fichier que vous voulez ouvrir ?")
@@ -82,7 +79,7 @@ def trier_histoire(histoire):
     for ligne in nouvelle_histoire:
         ligne["debut"] += 1
         if ligne.get("fin"):
-            ligne["fin"] +=1
+            ligne["fin"] += 1
 
     return nouvelle_histoire
 
@@ -145,7 +142,6 @@ def trouver_points(code_ink):
 
 
 def trouver_derivation(ligne):
-
     if re.search("->", ligne):
         derivation_position = code_ink.index(ligne)
         pointe_vers = re.sub("_", " ", ligne.split("->")[1])
@@ -204,7 +200,6 @@ def trouver_choix(code_ink):
                         derive = True
                         cible = trouver_derivation(ligne)
 
-
             if derive:
                 genre_choix = "choix dérivé"
 
@@ -218,7 +213,6 @@ def trouver_choix(code_ink):
 
             if etiquette:
                 dict_choix["nom"] = etiquette_choix
-
 
             histoire_ink.append(dict_choix)
 
@@ -268,8 +262,6 @@ def trouver_collecteur(code_ink):
                         derive = True
                         cible = trouver_derivation(ligne)
 
-
-
             if derive:
                 genre_collecteur = "collecteur dérivé"
 
@@ -277,7 +269,7 @@ def trouver_collecteur(code_ink):
                 genre_collecteur = "collecteur simple"
 
             dict_collecteur = {"genre": genre_collecteur, "debut": debut_collecteur, "fin": fin_collecteur,
-                           "niveau": niveau_collecteur}
+                               "niveau": niveau_collecteur}
 
             if derive:
                 dict_collecteur["cible"] = cible
@@ -301,19 +293,20 @@ def imprimer_liens_explicites(histoire_ink):
 
 
 def imprimer_liens_implicites(histoire_ink):
-
     # imprime tous les liens implicites entre les noeuds/points -> choix
     for element in histoire_ink:
 
         if genre_est("noeud", element) or genre_est("point", element):
             index = histoire_ink.index(element) + 1
 
-            while index < len(histoire_ink)-1:
+            while index < len(histoire_ink) - 1:
 
                 if genre_est("choix simple", histoire_ink[index]) or genre_est("choix dérivé", histoire_ink[index]):
 
                     if histoire_ink[index].get("niveau") == 1:
-                        graph.edge(element.get("nom"),str(histoire_ink[index].get("nom",histoire_ink[index].get("debut"))), style = "dotted")
+                        graph.edge(element.get("nom"),
+                                   str(histoire_ink[index].get("nom", histoire_ink[index].get("debut"))),
+                                   style="dotted")
 
                     index += 1
 
@@ -335,46 +328,55 @@ def imprimer_liens_implicites(histoire_ink):
     # imprime tous les liens entre choix/point/noeud -> collecteurs
 
     for element in histoire_ink:
-        index = histoire_ink.index(element)-1
+        index = histoire_ink.index(element) - 1
         choix_trouve = False
         collecteur_inferieur = False
         if genre_est("collecteur simple", element) or genre_est("collecteur dérivé", element):
-            while index > 1 :
+            while index > 1:
                 if genre_est("choix simple", histoire_ink[index]):
 
                     if histoire_ink[index].get("niveau") == element.get("niveau"):
-                        graph.edge(str(histoire_ink[index].get("nom",histoire_ink[index].get("debut"))), str(element.get("nom",element.get("debut"))), style = "dashed")
+                        graph.edge(str(histoire_ink[index].get("nom", histoire_ink[index].get("debut"))),
+                                   str(element.get("nom", element.get("debut"))), style="dashed")
                         choix_trouve = True
 
                     elif histoire_ink[index].get("niveau") > element.get("niveau") and collecteur_inferieur == False:
-                        graph.edge(str(histoire_ink[index].get("nom",histoire_ink[index].get("debut"))), str(element.get("nom",element.get("debut"))), style = "dashed")
+                        graph.edge(str(histoire_ink[index].get("nom", histoire_ink[index].get("debut"))),
+                                   str(element.get("nom", element.get("debut"))), style="dashed")
                         choix_trouve = True
                     index -= 1
 
                 elif genre_est("point", histoire_ink[index]) and choix_trouve == False:
-                    graph.edge(str(histoire_ink[index].get("nom")), str(element.get("nom",element.get("debut"))), style = "dashed")
+                    graph.edge(str(histoire_ink[index].get("nom")), str(element.get("nom", element.get("debut"))),
+                               style="dashed")
                     break
                 elif genre_est("noeud", histoire_ink[index]) and choix_trouve == False:
-                    graph.edge(str(histoire_ink[index].get("nom")), str(element.get("nom",element.get("debut"))), style = "dashed")
+                    graph.edge(str(histoire_ink[index].get("nom")), str(element.get("nom", element.get("debut"))),
+                               style="dashed")
                     break
-                elif genre_est("collecteur simple", histoire_ink[index]) and histoire_ink[index].get("niveau") <= element.get("niveau"):
+                elif genre_est("collecteur simple", histoire_ink[index]) and histoire_ink[index].get(
+                        "niveau") <= element.get("niveau"):
                     break
-                elif genre_est("collecteur dérivé", histoire_ink[index]) and histoire_ink[index].get("niveau") <= element.get("niveau"):
+                elif genre_est("collecteur dérivé", histoire_ink[index]) and histoire_ink[index].get(
+                        "niveau") <= element.get("niveau"):
                     break
                 elif genre_est("noeud", histoire_ink[index]) and choix_trouve == True:
                     break
                 elif genre_est("point", histoire_ink[index]) and choix_trouve == True:
                     break
-                elif genre_est("collecteur simple", histoire_ink[index]) and histoire_ink[index].get("niveau") > element.get("niveau"):
+                elif genre_est("collecteur simple", histoire_ink[index]) and histoire_ink[index].get(
+                        "niveau") > element.get("niveau"):
                     collecteur_inferieur = True
                     index -= 1
-                elif genre_est("collecteur dérivé", histoire_ink[index]) and histoire_ink[index].get("niveau") > element.get("niveau"):
+                elif genre_est("collecteur dérivé", histoire_ink[index]) and histoire_ink[index].get(
+                        "niveau") > element.get("niveau"):
                     collecteur_inferieur = True
                     index -= 1
                 else:
                     index -= 1
 
-#graph.edge("test","test1", style = "dotted")
+
+# graph.edge("test","test1", style = "dotted")
 
 
 code_ink = nettoyer_code(code_ink)
@@ -389,8 +391,7 @@ imprimer_liens_explicites(histoire_ink)
 imprimer_liens_implicites(histoire_ink)
 
 for i in histoire_ink:
-    print(i.get("genre"),"\t\t =\t ",str(i.get("nom",i.get("debut"))), " \t", i.get("niveau",""))
-
+    print(i.get("genre"), "\t\t =\t ", str(i.get("nom", i.get("debut"))), " \t", i.get("niveau", ""))
 
 # affichage du graph
 graph.render(view=True)
