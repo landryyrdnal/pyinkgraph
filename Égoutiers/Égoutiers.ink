@@ -57,7 +57,13 @@
         — « Je pense que c’est {bouchon}, ou un truc du genre… »
         — « Peut-être bien… En dix ans j’en ai vu des trucs, et des trucs autrements plus improbables. C’est peut être ça, mais c’est pas dit… » vous répond-il un peu blasé.
             ** — « Quel genre de trucs improbables ?[ »] C’est quoi le pire que vous ayez vu ? » lui demandez vous.
-            — « Je crois que le pire ça a été la fois où on a trouvé un doigt. » -> truc_improbable
+                — « Je crois que le pire ça a été la fois où on a trouvé un doigt. » -> truc_improbable
+            ** — « Ça te paraît bizarre ? »
+                — « Non je dis ça comme ça… attends-toi juste à rien, tu risque d’être un peu déçu. »
+        * [Vous attendez de voir avant d’annoncer quoi que ce soit]`
+        
+                
+    // TODO: finir ce truc
     
     
     = truc_improbable
